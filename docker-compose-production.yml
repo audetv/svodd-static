@@ -13,7 +13,10 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.http.routers.svodd-static.rule=Host(`static.svodd.ru`)
         - traefik.http.services.svodd-static.loadBalancer.server.port=80
-        - traefik.http.routers.svodd-static.middlewares=secure-headers
+        - traefik.http.middlewares.svodd-static-redirect.redirectRegex.regex=^(https?://)static.svodd.ru/(.*)$$
+        - traefik.http.middlewares.svodd-static-redirect.redirectRegex.replacement=$${1}static.svodd.ru/$${2}
+        - traefik.http.middlewares.svodd-static-redirect.redirectRegex.permanent=true
+        - traefik.http.routers.svodd-static.middlewares=cabinet-redirect,secure-headers
         - traefik.http.routers.svodd-static.entryPoints=https
         - traefik.http.routers.svodd-static.tls=true
         - traefik.http.routers.svodd-static.tls.certResolver=letsEncrypt
